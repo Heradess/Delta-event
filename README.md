@@ -1,6 +1,3 @@
-# NEA
+# NEA Alpha version 1.0
 
-ok so this is my humble game all you really have to do to start playing it is to run it on an IDE using python 3.7 or above.
-
-to install the required libraries just run 
-pip install -r requirements.txt
+This is the very bare bones of my game. it is coded to the best of my ability this is just a proof of concept for my game. 
