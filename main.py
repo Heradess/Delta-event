@@ -2,7 +2,9 @@
 import tcod
 
 #importing classes and subclasses created previously
-from actions import EscapeAction, MovementAction
+from engine import Engine
+from entity import Entity
+from game_map import GameMap
 from input_handlers import EventHandler
 
 
@@ -13,9 +15,9 @@ def main() -> None:
     screen_width = 80
     screen_height = 50
 
-    #this keeps track of the current position of the player
-    player_x = int(screen_width / 2)
-    player_y = int(screen_height / 2)
+    #sets map size
+    map_width = 80
+    map_height = 45
 
     #this is loading what font to use from the tileset file
     tileset = tcod.tileset.load_tilesheet(
@@ -24,6 +26,15 @@ def main() -> None:
 
     #creates instance of EventHandler class, used to receive and process events
     event_handler = EventHandler()
+
+    #importing the entities and store them in a set
+    player = Entity(int(screen_width / 2), int(screen_height / 2), "@", (255, 255, 255))
+    npc = Entity(int(screen_width / 2 - 5), int(screen_height / 2), "@", (255, 255, 0))
+    entities = {npc, player}
+
+    game_map = GameMap(map_width, map_height)
+
+    engine = Engine(entities=entities, event_handler=event_handler, game_map=game_map, player=player)
 
     #this part creates the tab along with giving the window a title
     #this part also enables and disables vsync
@@ -37,36 +48,18 @@ def main() -> None:
         
         #this creates the console and is set to be the same size as the tab
         #numpy reads from y and x in order which is not good so we switch it with 'order = "F"'
-        root_console = tcod.Console(screen_width, screen_height, order = "F")
+        root_console = tcod.console.Console(screen_width, screen_height, order = "F")
         
         #this is the game loop
         while True:
-            #this is what tells the computer where to put the character @ where we want it 
-            root_console.print(x=player_x, y=player_y, string="@")
+            #this is what tells the computer to run the code in entity.py
+            engine.render(console=root_console, context=context)
 
-            #this line is basically just a print function, it displays changes on the screen
-            context.present(root_console)
+            #this line waits for the input of the player
+            events = tcod.event.wait
             
-            #clears the trail so it moves every frame
-            root_console.clear()
-
-            #these lines of code allows the program to close instead of crashing
-            #this is also taking inputs from the user
-            for event in tcod.event.wait():
-                #this sends events to the correct places
-                action = event_handler.dispatch(event)
-                #this allows the code to jump if there is no valid key presses
-                if action is None:
-                    continue
-
-                #this allows the movement to happen
-                if isinstance(action, MovementAction):
-                    player_x += action.dx
-                    player_y += action.dy
-                
-                #closes the game when escape is pressed
-                elif isinstance(action, EscapeAction):
-                    raise SystemExit()
+            #handles the key presses to the right output
+            engine.handle_events(events)
 
 
 #this only allows the main fuction to run when 'python main.py' is explicitly executed in the terminal
