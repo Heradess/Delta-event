@@ -1,9 +1,11 @@
 #importing necessary libraries
+import copy
+
 import tcod
 
 #importing classes and subclasses created previously
 from engine import Engine
-from entity import Entity
+import entity_factory
 from input_handlers import EventHandler
 from procgen import generate_dungeon
 
@@ -23,18 +25,17 @@ def main() -> None:
     room_min_size = 6
     max_rooms = 30
 
+    max_monsters_per_room = 2
+
     #this is loading what font to use from the tileset file
     tileset = tcod.tileset.load_tilesheet(
-        "dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD
+        "N:\Desktop\Spaghetti code\dejavu10x10_gs_tc.png", 32, 8, tcod.tileset.CHARMAP_TCOD
     )
 
     #creates instance of EventHandler class, used to receive and process events
     event_handler = EventHandler()
 
-    #importing the entities and store them in a set
-    player = Entity(int(screen_width / 2), int(screen_height / 2), "@", (255, 255, 0))
-    npc = Entity(int(screen_width / 2 - 5), int(screen_height / 2), "H", (255, 0, 0))
-    entities = {npc, player}
+    player = copy.deepcopy(entity_factory.player)
 
     game_map = generate_dungeon(
         max_rooms=max_rooms,
@@ -42,10 +43,11 @@ def main() -> None:
         room_max_size=room_max_size,
         map_width=map_width,
         map_height=map_height,
-        player=player
+        player=player,
+        max_monsters_per_room=max_monsters_per_room
     )
 
-    engine = Engine(entities=entities, event_handler=event_handler, game_map=game_map, player=player)
+    engine = Engine(event_handler=event_handler, game_map=game_map, player=player)
 
     #this part creates the tab along with giving the window a title
     #this part also enables and disables vsync
