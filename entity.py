@@ -13,7 +13,7 @@ class Entity:
     """
     A generic object to represent players, enemies, items, etc.
     """
-
+    #setting some defaults
     def __init__(
         self,
         x: int = 0,

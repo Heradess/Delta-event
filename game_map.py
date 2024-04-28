@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class GameMap:
     def __init__(self, width: int, height: int, entities: Iterable[Entity] = ()):
         self.width, self.height = width, height
-        self.tiles = np.full((width, height), fill_value=tile_types.wall, order="F")
+        self.tiles = np.full((width, height), fill_value=tile_types.wall, order="F") #fills out the whole map with wall tiles can be changed to be a different tile
         self.entities = set(entities)
 
         self.visible = np.full((width, height), fill_value=False, order="F")  #tiles the player can currently see
@@ -38,6 +38,7 @@ class GameMap:
         )
 
         for entity in self.entities:
-            # Only print entities that are in the FOV
+            #only print entities that are in the FOV
+            #this is to because the player can't 'see' an orc through the wall
             if self.visible[entity.x, entity.y]:
                 console.print(x=entity.x, y=entity.y, string=entity.char, fg=entity.colour)
