@@ -22,19 +22,19 @@ class Engine:
             action = self.event_handler.dispatch(event)
 
             if action is None:
-                continue
+                continue #if nothing is pressed then everything continues rather than crashing or just stopping.
             
             action.perform(self, self.player)
 
-            self.update_fov()  #update the FOV before the players next action.
+            self.update_fov()  #update the FOV before the players next action. 
 
     def update_fov(self) -> None:
         self.game_map.visible[:] = compute_fov(
             self.game_map.tiles["transparent"],
             (self.player.x, self.player.y),
-            radius=8,
+            radius=8, #the range of the fov in a square around the player. this allows the player to have the illusion of a vision line
         )
-        #if a tile is "visible" it should be added to "explored".
+        #if a tile is or was "visible" it should be added to "explored"
         self.game_map.explored |= self.game_map.visible
     
     #this handles drawing the  screen
@@ -44,4 +44,4 @@ class Engine:
 
         context.present(console)
 
-        console.clear()
+        console.clear() #this clears the screen of any previous changes, this eliminates any trails left by moving. however on a larger scale this may cause lag as it is rendering all of the entities and map every single time that the action is pressed.

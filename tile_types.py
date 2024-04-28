@@ -33,16 +33,21 @@ def new_tile(
 
 MIST = np.array((ord(" "), (255, 255, 255), (0, 0, 0)), dtype=graphic_dt)
 
-
+#setting the floor tile with a colour a representative character in this case blank, as well as the colour when its visible and when it isn't visible
 floor = new_tile(
     walkable=True,
     transparent=True,
     dark=(ord(" "), (255, 255, 255), (50, 50, 150)),
     light=(ord(" "), (255, 255, 255), (200, 180, 50)),
 )
+
+#this sets the wall tile with its colour its representative character and the colour it is when visible and invisible
 wall = new_tile(
     walkable=False,
     transparent=False,
     dark=(ord(" "), (255, 255, 255), (0, 0, 100)),
     light=(ord(" "), (255, 255, 255), (130, 110, 50)),
 )
+
+#changing any of the tile values will change what the tiles look like and how they function
+#example. if you change the walkable argument to true for the wall, then you can go through the wall and have no clip, changing the dark or light arguments will change the rgb value and change what the tile looks like
